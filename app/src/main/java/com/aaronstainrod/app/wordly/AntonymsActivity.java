@@ -5,7 +5,11 @@ import android.os.AsyncTask;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,15 +25,13 @@ import java.net.URL;
 
 public class AntonymsActivity extends AppCompatActivity {
 
-    //Variables
-    private String[] activities;
-
     //Logging purposes
     private final String LOG_TAG = AntonymsActivity.class.getSimpleName();
 
     //Views
     private ListView antonyms_drawer_list;
     private DrawerLayout antonyms_drawer_layout;
+    private Toolbar antonyms_toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +39,47 @@ public class AntonymsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_antonyms);
 
         //Sets up navigation drawer
-        activities = getResources().getStringArray(R.array.activities);
+        String[] activities = getResources().getStringArray(R.array.activities);
         antonyms_drawer_list = (ListView) findViewById(R.id.antonyms_left_drawer);
         antonyms_drawer_list.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, activities));
         antonyms_drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
         //Navigation Drawer
-        antonyms_drawer_layout = (DrawerLayout) findViewById(R.id.antonyms_drawer_layout);}
+        antonyms_drawer_layout = (DrawerLayout) findViewById(R.id.antonyms_drawer_layout);
 
+        //Toolbar
+        Toolbar antonyms_toolbar = (Toolbar) findViewById(R.id.antonyms_toolbar);
+        setSupportActionBar(antonyms_toolbar);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_change_title:
+                return true;
+
+            case R.id.action_share:
+                return true;
+
+
+            case R.id.action_settings:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

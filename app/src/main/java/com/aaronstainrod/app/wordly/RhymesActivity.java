@@ -5,7 +5,11 @@ import android.os.AsyncTask;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,15 +25,13 @@ import java.net.URL;
 
 public class RhymesActivity extends AppCompatActivity {
 
-    //Variables
-    private String[] activities;
-
     //Logging purposes
     private final String LOG_TAG = RhymesActivity.class.getSimpleName();
 
     //Views
     private ListView rhymes_drawer_list;
     private DrawerLayout rhymes_drawer_layout;
+    private Toolbar rhymes_toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +39,47 @@ public class RhymesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rhymes);
 
         //Sets up navigation drawer
-        activities = getResources().getStringArray(R.array.activities);
+        String[] activities = getResources().getStringArray(R.array.activities);
         rhymes_drawer_list = (ListView) findViewById(R.id.rhymes_left_drawer);
         rhymes_drawer_list.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, activities));
         rhymes_drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
         //Navigation Drawer
-        rhymes_drawer_layout = (DrawerLayout) findViewById(R.id.rhymes_drawer_layout);}
+        rhymes_drawer_layout = (DrawerLayout) findViewById(R.id.rhymes_drawer_layout);
 
+        //Toolbar
+        Toolbar rhymes_toolbar = (Toolbar) findViewById(R.id.rhymes_toolbar);
+        setSupportActionBar(rhymes_toolbar);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_change_title:
+                return true;
+
+            case R.id.action_share:
+                return true;
+
+
+            case R.id.action_settings:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
