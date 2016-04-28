@@ -41,7 +41,7 @@
 
             android:hint="Find"
 
-            android:onClick="findTheDefinition"
+            android:onClick="onClickFind"
             android:layout_below="@+id/main_user_input"
             android:layout_alignStart="@+id/main_educate" />
 
