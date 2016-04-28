@@ -25,7 +25,7 @@ public class SynonymsActivity extends AppCompatActivity {
     private String[] activities;
 
     //Logging purposes
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String LOG_TAG = SynonymsActivity.class.getSimpleName();
 
     //Views
     private ListView synonyms_drawer_list;
@@ -83,6 +83,7 @@ public class SynonymsActivity extends AppCompatActivity {
                 break;
 
             default:
+                synonyms_drawer_layout.closeDrawer(synonyms_drawer_list);
                 break;
         }
 
