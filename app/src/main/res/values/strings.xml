@@ -1,3 +1,17 @@
 <resources>
+
+    <!--Name of the application-->
     <string name="app_name">Wordly</string>
+
+    <!--Navigation drawer items-->
+    <string-array name="activities">
+        <item>Definitions</item>
+        <item>Synonyms</item>
+        <item>Antonyms</item>
+        <item>Rhymes</item>
+        <item>Sentences</item>
+        <item>Syllables</item>
+    </string-array>
+
+    <!---->
 </resources>
