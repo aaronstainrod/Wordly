@@ -56,7 +56,7 @@ public class SentencesActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.action_bar, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -65,12 +65,8 @@ public class SentencesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_change_title:
+            case R.id.action_change_mode:
                 return true;
-
-            case R.id.action_share:
-                return true;
-
 
             case R.id.action_settings:
                 return true;
@@ -79,6 +75,7 @@ public class SentencesActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -1,11 +1,11 @@
 package com.aaronstainrod.app.wordly;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     //Views
     private ListView main_drawer_list;
     private DrawerLayout main_drawer_layout;
+
+    //private ShareActionProvider
     private Toolbar main_toolbar;
 
     @Override
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.action_bar, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -70,12 +76,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_change_title:
+            case R.id.action_change_mode:
                 return true;
-
-            case R.id.action_share:
-                return true;
-
 
             case R.id.action_settings:
                 return true;
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switchActivities(position);
         }
-    };
+    }
 
     public void switchActivities(int position){
         Intent intent;
@@ -138,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class FetchDefinition extends AsyncTask<String,Void,String> {
 
-        public String definition;
+        public String definition, output;
 
         @Override
         protected String doInBackground(String... params) {
@@ -173,12 +175,24 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(LOG_TAG, "Null");
                     return null;
                 }
-                //Response from Yoda Speak API
-                definition = buffer.toString();
+                //Response from WordsAPI
+                String response = buffer.toString();
+                JSONObject JSONresponse = new JSONObject(response);
+                JSONArray definitions =JSONresponse.getJSONArray("definitions");
+
+                for (int i = 0; i < definitions.length(); i++) {
+                    JSONObject d = definitions.getJSONObject(i);
+                    definition += d.getString("definition") + ": " + d.getString("partOfSpeech") + "\n" + "\n";
+                }
+                definition = definition.substring(0, 4);
                 Log.i(LOG_TAG, definition);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Error with JSON");
+                e.printStackTrace();
+                return "Sorry, couldn't get anything for you";
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
@@ -194,12 +208,15 @@ public class MainActivity extends AppCompatActivity {
             if (definition == null) {
                 Log.e(LOG_TAG, "Error retrieving definition");
             }
+
             return definition;
+
         }
 
         protected void onPostExecute(String result) {
             definition = result;
             Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
+            intent.putExtra(Interpreter.definition, result);
             intent.putExtra(ResultsActivity.output, result);
             startActivity(intent);
         }

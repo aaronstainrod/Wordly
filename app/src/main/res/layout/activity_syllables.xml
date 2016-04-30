@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
 
-            android:background="#0a396b"
+            android:background="#6b510a"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -55,8 +55,7 @@
 
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#306cf2"/>
+        android:dividerHeight="5dp"
+        android:background="#5a5a5a"/>
 
 </android.support.v4.widget.DrawerLayout>

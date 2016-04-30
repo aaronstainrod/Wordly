@@ -14,7 +14,7 @@
     </string-array>
 
     <!--Action Bar Items-->
-    <string name="action_change_title">Change</string>
+    <string name="action_change_mode">Change</string>
     <string name="action_share">Share</string>
     <string name="action_settings">Settings</string>
 
