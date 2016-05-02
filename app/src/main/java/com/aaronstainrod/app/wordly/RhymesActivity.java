@@ -205,7 +205,7 @@ public class RhymesActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error retrieving rhyme");
             }
 
-            user_parameter = "Rhymes with \"" + params[0] + "\"";
+            user_parameter = "Rhymes of \"" + params[0] + "\"";
 
             return rhyme;
         }

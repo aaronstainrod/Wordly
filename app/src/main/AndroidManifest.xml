@@ -22,7 +22,8 @@
         <activity android:name=".SyllablesActivity" />
         <activity android:name=".AntonymsActivity" />
         <activity android:name=".RhymesActivity" />
-        <activity android:name=".ResultsActivity"></activity>
+        <activity android:name=".ResultsActivity" />
+        <activity android:name=".OptionsActivity"></activity>
     </application>
 
 </manifest>

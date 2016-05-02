@@ -203,7 +203,7 @@ public class SyllablesActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error retrieving syllables");
             }
 
-            user_parameter = "Sounding out \"" + params[0] + "\"";
+            user_parameter = "pronunciation of \"" + params[0] + "\"";
 
             return syllable;
         }

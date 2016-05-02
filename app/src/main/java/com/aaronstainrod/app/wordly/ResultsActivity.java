@@ -2,8 +2,11 @@ package com.aaronstainrod.app.wordly;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +29,10 @@ public class ResultsActivity extends AppCompatActivity {
     //Toolbar
     Toolbar results_toolbar;
 
+    //ShareActionProvider
+    private ShareActionProvider sap;
+    private MenuItem action_share;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +41,6 @@ public class ResultsActivity extends AppCompatActivity {
         //Gets previous activity's output
         Intent intent = getIntent();
         results_info = (String[]) intent.getExtras().get("results_info");
-
-        for (String s: results_info) {
-            if (s == null || s.isEmpty()) {
-                s = "error_#001_inappropriate_input";
-            }
-        }
 
         //Sets text for input view
         results_parameter_view = (TextView) findViewById(R.id.results_parameter_view);
@@ -53,7 +54,7 @@ public class ResultsActivity extends AppCompatActivity {
         //Sets up navigation drawer
         String[] activities = getResources().getStringArray(R.array.activities);
         results_drawer_list = (ListView) findViewById(R.id.results_left_drawer);
-        results_drawer_list.setAdapter(new ArrayAdapter<String>(this,
+        results_drawer_list.setAdapter(new ArrayAdapter<>(this,
                 R.layout.drawer_list_item, activities));
         results_drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -70,11 +71,15 @@ public class ResultsActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "I learned about the " + results_info[0].toUpperCase() + " today!");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
                 return true;
 
             case R.id.action_settings:

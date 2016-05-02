@@ -203,7 +203,7 @@ public class ExamplesActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error retrieving example");
             }
 
-            user_parameter = "example(s) with \"" + params[0] + "\"";
+            user_parameter = "example(s) using \"" + params[0] + "\"";
 
             return example;
         }
