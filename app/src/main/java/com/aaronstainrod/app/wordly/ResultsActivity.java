@@ -1,6 +1,7 @@
 package com.aaronstainrod.app.wordly;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,29 +14,41 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class ResultsActivity extends AppCompatActivity {
 
     ///Variables
-    public static String output, result;
-    Interpreter in;
+    public String[] results_info;
 
     //Views
-    TextView result_text_view;
+    TextView results_parameter_view, results_text_view;
     ListView results_drawer_list;
 
     //Toolbar
     Toolbar results_toolbar;
-
-    JSONObject info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        //Gets previous activity's output
+        Intent intent = getIntent();
+        results_info = (String[]) intent.getExtras().get("results_info");
+
+        for (String s: results_info) {
+            if (s == null || s.isEmpty()) {
+                s = "error_#001_inappropriate_input";
+            }
+        }
+
+        //Sets text for input view
+        results_parameter_view = (TextView) findViewById(R.id.results_parameter_view);
+        results_parameter_view.setText(results_info[0].toUpperCase());
+        results_parameter_view.setShadowLayer(1, 0, 0, Color.BLACK);
+
+        //Sets Text for results
+        results_text_view = (TextView) findViewById(R.id.result_text_view);
+        results_text_view.setText(results_info[1]);
 
         //Sets up navigation drawer
         String[] activities = getResources().getStringArray(R.array.activities);
@@ -47,13 +60,6 @@ public class ResultsActivity extends AppCompatActivity {
         //Sets up Toolbar
         results_toolbar = (Toolbar) findViewById(R.id.results_toolbar);
         setSupportActionBar(results_toolbar);
-
-
-        //Sets Text
-        Intent intent = getIntent();
-        output = (String) intent.getExtras().get(result);
-        result_text_view = (TextView) findViewById(R.id.result_text_view);
-        result_text_view.setText(output);
     }
 
     @Override
@@ -106,7 +112,7 @@ public class ResultsActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                intent = new Intent(this, SentencesActivity.class);
+                intent = new Intent(this, ExamplesActivity.class);
                 startActivity(intent);
                 break;
 

@@ -16,6 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SynonymsActivity extends AppCompatActivity {
+
+    private String user_parameter;
 
     //Logging purposes
     private final String LOG_TAG = SynonymsActivity.class.getSimpleName();
@@ -102,7 +108,7 @@ public class SynonymsActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                intent = new Intent(this, SentencesActivity.class);
+                intent = new Intent(this, ExamplesActivity.class);
                 startActivity(intent);
                 break;
 
@@ -164,12 +170,21 @@ public class SynonymsActivity extends AppCompatActivity {
                     Log.i(LOG_TAG, "Null");
                     return null;
                 }
-                //Response from Yoda Speak API
-                synonym = buffer.toString();
-                Log.i(LOG_TAG, synonym);
+                //Response from WordsAPI
+                String response = buffer.toString();
+                JSONArray synonyms = new JSONObject(response).getJSONArray("synonyms");
+
+                for (int i = 0; i < synonyms.length(); i++) {
+                    synonym += synonyms.getString(i) + "\n \n";
+                }
+                //Removes the word "null" from the beginning of the string
+                synonym = synonym.substring(4).trim();
+
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "Sorry, couldn't get anything for you";
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
@@ -177,21 +192,23 @@ public class SynonymsActivity extends AppCompatActivity {
                 if (reader != null) {
                     try {
                         reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
+                    } catch (final IOException e) {}
                 }
             }
             if (synonym == null) {
                 Log.e(LOG_TAG, "Error retrieving synonym");
             }
+
+            user_parameter = "Synonym(s) for \"" + params[0] + "\"";
+
             return synonym;
+
         }
 
         protected void onPostExecute(String result) {
-            synonym = result;
+            String[] results_info = {user_parameter, result};
             Intent intent = new Intent(SynonymsActivity.this, ResultsActivity.class);
-            intent.putExtra(ResultsActivity.output, result);
+            intent.putExtra("results_info", results_info);
             startActivity(intent);
         }
     }

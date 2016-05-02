@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +30,7 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
 
     //Variables
-    private String[] activities;
+    private String user_parameter;
 
     //Logging purposes
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                intent = new Intent(this, SentencesActivity.class);
+                intent = new Intent(this, ExamplesActivity.class);
                 startActivity(intent);
                 break;
 
@@ -169,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line + "\n");
-                    Log.i(LOG_TAG, line);
                 }
                 if (buffer.length() == 0) {
                     Log.i(LOG_TAG, "Null");
@@ -177,20 +175,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //Response from WordsAPI
                 String response = buffer.toString();
-                JSONObject JSONresponse = new JSONObject(response);
-                JSONArray definitions =JSONresponse.getJSONArray("definitions");
+                JSONArray definitions = new JSONObject(response).getJSONArray("definitions");
 
                 for (int i = 0; i < definitions.length(); i++) {
                     JSONObject d = definitions.getJSONObject(i);
-                    definition += d.getString("definition") + ": " + d.getString("partOfSpeech") + "\n" + "\n";
+                    definition += d.getString("partOfSpeech") + ":\n" + d.getString("definition") + "\n \n";
                 }
-                definition = definition.substring(0, 4);
-                Log.i(LOG_TAG, definition);
+                //Removes the word "null" from the beginning of the string
+                definition = definition.substring(4);
+
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
             } catch (JSONException e) {
-                Log.e(LOG_TAG, "Error with JSON");
                 e.printStackTrace();
                 return "Sorry, couldn't get anything for you";
             } finally {
@@ -200,24 +196,23 @@ public class MainActivity extends AppCompatActivity {
                 if (reader != null) {
                     try {
                         reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
+                    } catch (final IOException e) {}
                 }
             }
             if (definition == null) {
                 Log.e(LOG_TAG, "Error retrieving definition");
             }
 
+            user_parameter = "Definition(s) of \"" + params[0] + "\"";
+
             return definition;
 
         }
 
         protected void onPostExecute(String result) {
-            definition = result;
+            String[] results_info = {user_parameter, result};
             Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
-            intent.putExtra(Interpreter.definition, result);
-            intent.putExtra(ResultsActivity.output, result);
+            intent.putExtra("results_info", results_info);
             startActivity(intent);
         }
     }

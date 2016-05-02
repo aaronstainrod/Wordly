@@ -16,6 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,34 +27,36 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class SentencesActivity extends AppCompatActivity {
+public class ExamplesActivity extends AppCompatActivity {
+
+    private String user_parameter;
 
     //Logging purposes
-    private final String LOG_TAG = SentencesActivity.class.getSimpleName();
+    private final String LOG_TAG = ExamplesActivity.class.getSimpleName();
 
     //Views
-    private ListView sentences_drawer_list;
-    private DrawerLayout sentences_drawer_layout;
-    private Toolbar sentences_toolbar;
+    private ListView examples_drawer_list;
+    private DrawerLayout examples_drawer_layout;
+    private Toolbar examples_toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sentences);
+        setContentView(R.layout.activity_examples);
 
         //Sets up navigation drawer
         String[] activities = getResources().getStringArray(R.array.activities);
-        sentences_drawer_list = (ListView) findViewById(R.id.sentences_left_drawer);
-        sentences_drawer_list.setAdapter(new ArrayAdapter<>(this,
+        examples_drawer_list = (ListView) findViewById(R.id.examples_left_drawer);
+        examples_drawer_list.setAdapter(new ArrayAdapter<>(this,
                 R.layout.drawer_list_item, activities));
-        sentences_drawer_list.setOnItemClickListener(new DrawerItemClickListener());
+        examples_drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
         //Navigation Drawer
-        sentences_drawer_layout = (DrawerLayout) findViewById(R.id.sentences_drawer_layout);
+        examples_drawer_layout = (DrawerLayout) findViewById(R.id.examples_drawer_layout);
 
         //Toolbar
-        Toolbar sentences_toolbar = (Toolbar) findViewById(R.id.sentences_toolbar);
-        setSupportActionBar(sentences_toolbar);
+        Toolbar examples_toolbar = (Toolbar) findViewById(R.id.examples_toolbar);
+        setSupportActionBar(examples_toolbar);
     }
 
     @Override
@@ -113,24 +119,24 @@ public class SentencesActivity extends AppCompatActivity {
                 break;
 
             default:
-                sentences_drawer_layout.closeDrawer(sentences_drawer_list);
+                examples_drawer_layout.closeDrawer(examples_drawer_list);
                 break;
         }
 
     }
     public void onClickFind(View view) {
         //Gets user input
-        EditText user_text = (EditText) findViewById(R.id.sentences_user_input);
+        EditText user_text = (EditText) findViewById(R.id.examples_user_input);
         String user_input = user_text.getText().toString().replaceAll(" ", "");
 
-        new FetchSentences().execute(user_input);
-        sentences_drawer_layout.closeDrawer(sentences_drawer_list);
+        new FetchExamples().execute(user_input);
+        examples_drawer_layout.closeDrawer(examples_drawer_list);
     }
 
 
-    private class FetchSentences extends AsyncTask<String,Void,String> {
+    private class FetchExamples extends AsyncTask<String,Void,String> {
 
-        public String sentence;
+        public String example;
 
         @Override
         protected String doInBackground(String... params) {
@@ -152,6 +158,7 @@ public class SentencesActivity extends AppCompatActivity {
                 // Read the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
+
                 if (inputStream == null) {
                     return null;
                 }
@@ -165,9 +172,18 @@ public class SentencesActivity extends AppCompatActivity {
                     Log.i(LOG_TAG, "Null");
                     return null;
                 }
-                //Response from Yoda Speak API
-                sentence = buffer.toString();
-                Log.i(LOG_TAG, sentence);
+                //Response from WordsAPI
+                String response = buffer.toString();
+                JSONArray examples = new JSONObject(response).getJSONArray("examples");
+
+                for (int i = 0; i < examples.length(); i++) {
+                    example += examples.getString(i) + "\n \n";
+                }
+
+                example = example.substring(4);
+
+            } catch(JSONException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
@@ -183,16 +199,19 @@ public class SentencesActivity extends AppCompatActivity {
                     }
                 }
             }
-            if (sentence == null) {
-                Log.e(LOG_TAG, "Error retrieving sentence");
+            if (example == null) {
+                Log.e(LOG_TAG, "Error retrieving example");
             }
-            return sentence;
+
+            user_parameter = "example(s) with \"" + params[0] + "\"";
+
+            return example;
         }
 
         protected void onPostExecute(String result) {
-            sentence = result;
-            Intent intent = new Intent(SentencesActivity.this, ResultsActivity.class);
-            intent.putExtra(ResultsActivity.output, result);
+            String[] results_info = {user_parameter, result};
+            Intent intent = new Intent(ExamplesActivity.this, ResultsActivity.class);
+            intent.putExtra("results_info", results_info);
             startActivity(intent);
         }
     }

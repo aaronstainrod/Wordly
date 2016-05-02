@@ -16,6 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class RhymesActivity extends AppCompatActivity {
+
+    private String user_parameter;
 
     //Logging purposes
     private final String LOG_TAG = RhymesActivity.class.getSimpleName();
@@ -104,7 +110,7 @@ public class RhymesActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                intent = new Intent(this, SentencesActivity.class);
+                intent = new Intent(this, ExamplesActivity.class);
                 startActivity(intent);
                 break;
 
@@ -166,10 +172,21 @@ public class RhymesActivity extends AppCompatActivity {
                     Log.i(LOG_TAG, "Null");
                     return null;
                 }
-                //Response from Yoda Speak API
-                rhyme = buffer.toString();
+                //Response from WordsAPI
+                String response = buffer.toString();
+                JSONArray rhymes = new JSONObject(response).getJSONObject("rhymes").getJSONArray("all");
+
+                for (int i = 0; i < rhymes.length(); i++) {
+                    rhyme += rhymes.get(i) + "\n \n";
+                }
+
+                rhyme = rhyme.substring(4);
+
                 Log.i(LOG_TAG, rhyme);
-            } catch (IOException e) {
+            }  catch (JSONException e) {
+                e.printStackTrace();
+            }
+            catch (IOException e) {
                 Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
             } finally {
@@ -187,13 +204,16 @@ public class RhymesActivity extends AppCompatActivity {
             if (rhyme == null) {
                 Log.e(LOG_TAG, "Error retrieving rhyme");
             }
+
+            user_parameter = "Rhymes with \"" + params[0] + "\"";
+
             return rhyme;
         }
 
         protected void onPostExecute(String result) {
-            rhyme = result;
+            String[] results_info = {user_parameter, result};
             Intent intent = new Intent(RhymesActivity.this, ResultsActivity.class);
-            intent.putExtra(ResultsActivity.output, result);
+            intent.putExtra("results_info", results_info);
             startActivity(intent);
         }
     }

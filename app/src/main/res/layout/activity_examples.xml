@@ -2,18 +2,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    android:id="@+id/sentences_drawer_layout"
+    android:id="@+id/examples_drawer_layout"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/sentences_layout"
+        android:id="@+id/examples_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/sentences_toolbar"
+            android:id="@+id/examples_toolbar"
 
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -24,17 +24,17 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
         <EditText
-            android:id="@+id/sentences_user_input"
+            android:id="@+id/examples_user_input"
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:hint="Find sentences..."
-            android:layout_below="@+id/sentences_toolbar"
+            android:hint="Find examples..."
+            android:layout_below="@+id/examples_toolbar"
             android:layout_alignParentStart="true" />
 
         <Button
-            android:id="@+id/sentences_find"
+            android:id="@+id/examples_find"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,20 +42,19 @@
             android:hint="Find"
 
             android:onClick="onClickFind"
-            android:layout_below="@+id/sentences_user_input"
+            android:layout_below="@+id/examples_user_input"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/sentences_left_drawer"
+        android:id="@+id/examples_left_drawer"
 
         android:layout_width="240dp"
         android:layout_height="match_parent"
 
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:dividerHeight="5dp"
         android:background="#5a5a5a"/>
 
 </android.support.v4.widget.DrawerLayout>

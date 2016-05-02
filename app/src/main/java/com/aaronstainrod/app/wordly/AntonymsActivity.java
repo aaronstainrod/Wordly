@@ -16,6 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class AntonymsActivity extends AppCompatActivity {
+
+    private String user_parameter;
 
     //Logging purposes
     private final String LOG_TAG = AntonymsActivity.class.getSimpleName();
@@ -104,7 +110,7 @@ public class AntonymsActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                intent = new Intent(this, SentencesActivity.class);
+                intent = new Intent(this, ExamplesActivity.class);
                 startActivity(intent);
                 break;
 
@@ -166,12 +172,21 @@ public class AntonymsActivity extends AppCompatActivity {
                     Log.i(LOG_TAG, "Null");
                     return null;
                 }
-                //Response from Yoda Speak API
-                antonym = buffer.toString();
-                Log.i(LOG_TAG, antonym);
+                //Response from WordsAPI
+                String response = buffer.toString();
+                JSONArray antonyms = new JSONObject(response).getJSONArray("antonyms");
+
+                for (int i = 0; i < antonyms.length(); i++) {
+                    antonym += antonyms.getString(i) + "\n \n";
+                }
+                //Removes the word "null" from the beginning of the string
+                antonym = antonym.substring(4).trim();
+
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "Sorry, couldn't get anything for you";
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
@@ -187,13 +202,16 @@ public class AntonymsActivity extends AppCompatActivity {
             if (antonym == null) {
                 Log.e(LOG_TAG, "Error retrieving antonym");
             }
+
+            user_parameter = params[0];
+
             return antonym;
         }
 
         protected void onPostExecute(String result) {
-            antonym = result;
+            String[] results_info = {user_parameter, result};
             Intent intent = new Intent(AntonymsActivity.this, ResultsActivity.class);
-            intent.putExtra(ResultsActivity.output, result);
+            intent.putExtra("results_info", results_info);
             startActivity(intent);
         }
     }

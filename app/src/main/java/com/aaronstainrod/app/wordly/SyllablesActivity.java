@@ -16,6 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SyllablesActivity extends AppCompatActivity {
+
+    private String user_parameter;
 
     //Logging purposes
     private final String LOG_TAG = SyllablesActivity.class.getSimpleName();
@@ -108,7 +114,7 @@ public class SyllablesActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                intent = new Intent(this, SentencesActivity.class);
+                intent = new Intent(this, ExamplesActivity.class);
                 startActivity(intent);
                 break;
 
@@ -130,7 +136,7 @@ public class SyllablesActivity extends AppCompatActivity {
 
     private class FetchSyllables extends AsyncTask<String,Void,String> {
 
-        public String syllables;
+        public String syllable;
 
         @Override
         protected String doInBackground(String... params) {
@@ -165,9 +171,19 @@ public class SyllablesActivity extends AppCompatActivity {
                     Log.i(LOG_TAG, "Null");
                     return null;
                 }
-                //Response from Yoda Speak API
-                syllables = buffer.toString();
-                Log.i(LOG_TAG, syllables);
+                //Response from WordAPI
+                String response = buffer.toString();
+                JSONArray list = new JSONObject(response).getJSONObject("syllables").getJSONArray("list");
+
+                for (int i = 0; i < list.length(); i++) {
+                    syllable += "\"" + list.getString(i) + "\" \t \t";
+                }
+
+                syllable = syllable.substring(4).trim();
+
+                Log.i(LOG_TAG, syllable);
+            } catch (JSONException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error " + e.getMessage(), e);
                 return null;
@@ -183,16 +199,19 @@ public class SyllablesActivity extends AppCompatActivity {
                     }
                 }
             }
-            if (syllables == null) {
+            if (syllable == null) {
                 Log.e(LOG_TAG, "Error retrieving syllables");
             }
-            return syllables;
+
+            user_parameter = "Sounding out \"" + params[0] + "\"";
+
+            return syllable;
         }
 
         protected void onPostExecute(String result) {
-            syllables = result;
+            String[] results_info = {user_parameter, result};
             Intent intent = new Intent(SyllablesActivity.this, ResultsActivity.class);
-            intent.putExtra(ResultsActivity.output, result);
+            intent.putExtra("results_info", results_info);
             startActivity(intent);
         }
     }
