@@ -43,16 +43,6 @@
 
             android:onClick="onClickFind"
             android:layout_below="@+id/main_user_input"
-            android:layout_alignStart="@+id/main_educate" />
-
-        <Button
-            android:id="@+id/main_educate"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:hint="Educate"
-            android:layout_below="@+id/main_find"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
