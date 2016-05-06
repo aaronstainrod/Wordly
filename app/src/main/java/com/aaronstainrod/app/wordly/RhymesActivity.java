@@ -1,6 +1,7 @@
 package com.aaronstainrod.app.wordly;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +32,8 @@ import java.net.URL;
 public class RhymesActivity extends AppCompatActivity {
 
     private String user_parameter;
+    private RelativeLayout layout;
+    public Boolean isChecked = false;
 
     //Logging purposes
     private final String LOG_TAG = RhymesActivity.class.getSimpleName();
@@ -43,6 +47,7 @@ public class RhymesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rhymes);
+        layout = (RelativeLayout) findViewById(R.id.rhymes_layout);
 
         //Sets up navigation drawer
         String[] activities = getResources().getStringArray(R.array.activities);
@@ -57,6 +62,9 @@ public class RhymesActivity extends AppCompatActivity {
         //Toolbar
         Toolbar rhymes_toolbar = (Toolbar) findViewById(R.id.rhymes_toolbar);
         setSupportActionBar(rhymes_toolbar);
+
+        isChecked = getIntent().getBooleanExtra("isChecked", isChecked);
+        adjustMode(isChecked);
 
     }
 
@@ -73,9 +81,18 @@ public class RhymesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_change_mode:
+                isChecked = !isChecked;
+                if (isChecked) {
+                    layout.setBackgroundColor(Color.DKGRAY);
+                } else {
+                    layout.setBackgroundColor(Color.WHITE);
+                }
                 return true;
 
             case R.id.action_settings:
+                Intent intent = new Intent(RhymesActivity.this, AboutActivity.class);
+                intent.putExtra("isChecked", isChecked);
+                startActivity(intent);
                 return true;
 
             default:
@@ -96,26 +113,31 @@ public class RhymesActivity extends AppCompatActivity {
         switch(position) {
             case 0:
                 intent = new Intent(this, MainActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 1:
                 intent = new Intent(this, SynonymsActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 2:
                 intent = new Intent(this, AntonymsActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 4:
                 intent = new Intent(this, ExamplesActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 5:
                 intent = new Intent(this, SyllablesActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
@@ -214,7 +236,17 @@ public class RhymesActivity extends AppCompatActivity {
             String[] results_info = {user_parameter, result};
             Intent intent = new Intent(RhymesActivity.this, ResultsActivity.class);
             intent.putExtra("results_info", results_info);
+            intent.putExtra("isChecked", isChecked);
             startActivity(intent);
+        }
+    }
+
+    public void adjustMode(boolean isChecked) {
+        isChecked = getIntent().getBooleanExtra("isChecked",isChecked);
+        if (isChecked) {
+            layout.setBackgroundColor(Color.DKGRAY);
+        } else {
+            layout.setBackgroundColor(Color.WHITE);
         }
     }
 }

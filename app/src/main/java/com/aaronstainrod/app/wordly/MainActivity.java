@@ -1,6 +1,7 @@
 package com.aaronstainrod.app.wordly;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     //Views
     private ListView main_drawer_list;
     private DrawerLayout main_drawer_layout;
+    private RelativeLayout main_layout;
+    public Boolean isChecked = false;
 
     //private ShareActionProvider
     private Toolbar main_toolbar;
@@ -47,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        main_layout = (RelativeLayout) findViewById(R.id.main_layout);
+
         //Sets up navigation drawer
         String[] activities = getResources().getStringArray(R.array.activities);
         main_drawer_list = (ListView) findViewById(R.id.main_left_drawer);
-        main_drawer_list.setAdapter(new ArrayAdapter<String>(this,
+        main_drawer_list.setAdapter(new ArrayAdapter<>(this,
                 R.layout.drawer_list_item, activities));
         main_drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -58,10 +64,14 @@ public class MainActivity extends AppCompatActivity {
         main_drawer_layout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
         //Toolbar
-        Toolbar main_toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        main_toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(main_toolbar);
+
+        isChecked = getIntent().getBooleanExtra("isChecked", isChecked);
+        adjustMode(isChecked);
     }
 
+    //Sets up action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -75,9 +85,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_change_mode:
+                isChecked = !isChecked;
+                if (isChecked) {
+                    main_layout.setBackgroundColor(Color.DKGRAY);
+                } else {
+                    main_layout.setBackgroundColor(Color.WHITE);
+                }
                 return true;
 
             case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
                 return true;
 
             default:
@@ -98,30 +116,36 @@ public class MainActivity extends AppCompatActivity {
         switch(position) {
             case 1:
                 intent = new Intent(this, SynonymsActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 2:
                 intent = new Intent(this, AntonymsActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
             break;
 
             case 3:
                 intent = new Intent(this, RhymesActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 4:
                 intent = new Intent(this, ExamplesActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             case 5:
                 intent = new Intent(this, SyllablesActivity.class);
+                intent.putExtra("isChecked", isChecked);
                 startActivity(intent);
                 break;
 
             default:
+                main_drawer_layout.closeDrawers();
                 break;
         }
 
@@ -138,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class FetchDefinition extends AsyncTask<String,Void,String> {
 
-        public String definition, output;
+        public String definition;
 
         @Override
         protected String doInBackground(String... params) {
@@ -212,7 +236,17 @@ public class MainActivity extends AppCompatActivity {
             String[] results_info = {user_parameter, result};
             Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
             intent.putExtra("results_info", results_info);
+            intent.putExtra("isChecked", isChecked);
             startActivity(intent);
+        }
+    }
+
+    public void adjustMode(boolean isChecked) {
+        isChecked = getIntent().getBooleanExtra("isChecked",isChecked);
+        if (isChecked) {
+            main_layout.setBackgroundColor(Color.DKGRAY);
+        } else {
+            main_layout.setBackgroundColor(Color.WHITE);
         }
     }
 }

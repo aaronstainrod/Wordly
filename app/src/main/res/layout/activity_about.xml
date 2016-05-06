@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OptionsActivity">
+    tools:context=".AboutActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/options_toolbar"
@@ -11,9 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
 
-        android:background="#e6e6e6"
+        android:background="#0a396b"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Wordly \n by Aaron Stainrod \n aaron.stainrod@quinnipiac.edu"
+        android:id="@+id/textView"
+        android:layout_below="@+id/options_toolbar"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

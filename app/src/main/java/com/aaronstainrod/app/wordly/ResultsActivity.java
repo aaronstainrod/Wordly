@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ShareActionProvider;
@@ -15,32 +16,33 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ResultsActivity extends AppCompatActivity {
 
     ///Variables
     public String[] results_info;
-
-    //Views
     TextView results_parameter_view, results_text_view;
     ListView results_drawer_list;
-
-    //Toolbar
     Toolbar results_toolbar;
-
-    //ShareActionProvider
-    private ShareActionProvider sap;
-    private MenuItem action_share;
+    private boolean isChecked;
+    private RelativeLayout layout;
+    private DrawerLayout results_drawer_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        layout = (RelativeLayout) findViewById(R.id.results_layout);
+        results_drawer_layout = (DrawerLayout) findViewById(R.id.results_drawer_layout);
+
+
         //Gets previous activity's output
         Intent intent = getIntent();
         results_info = (String[]) intent.getExtras().get("results_info");
+        isChecked = (boolean) intent.getExtras().get("isChecked");
 
         //Sets text for input view
         results_parameter_view = (TextView) findViewById(R.id.results_parameter_view);
@@ -61,6 +63,8 @@ public class ResultsActivity extends AppCompatActivity {
         //Sets up Toolbar
         results_toolbar = (Toolbar) findViewById(R.id.results_toolbar);
         setSupportActionBar(results_toolbar);
+
+        adjustMode(isChecked);
     }
 
     @Override
@@ -127,8 +131,20 @@ public class ResultsActivity extends AppCompatActivity {
                 break;
 
             default:
+                results_drawer_layout.closeDrawers();
                 break;
         }
 
+    }
+
+    public void adjustMode(boolean isChecked) {
+        isChecked = getIntent().getBooleanExtra("isChecked",isChecked);
+        if (isChecked) {
+            layout.setBackgroundColor(Color.DKGRAY);
+            results_text_view.setTextColor(Color.WHITE);
+        } else {
+            layout.setBackgroundColor(Color.WHITE);
+            results_text_view.setTextColor(Color.BLUE);
+        }
     }
 }
