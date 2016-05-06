@@ -1,5 +1,8 @@
 package com.aaronstainrod.app.wordly;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -64,7 +67,7 @@ public class SyllablesActivity extends AppCompatActivity {
         setSupportActionBar(syllables_toolbar);
 
         isChecked = getIntent().getBooleanExtra("isChecked", isChecked);
-        adjustMode(isChecked);
+        adjustMode(isChecked, layout);
     }
 
     @Override
@@ -89,9 +92,17 @@ public class SyllablesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_settings:
-                Intent intent = new Intent(SyllablesActivity.this, AboutActivity.class);
-                intent.putExtra("isChecked", isChecked);
-                startActivity(intent);
+                Fragment fragment = new AboutFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragmentTransaction.replace(R.id.syllables_layout, fragment);
+                fragmentTransaction.addToBackStack("");
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+
+                adjustMode(isChecked, layout);
+                syllables_drawer_layout.closeDrawers();
                 return true;
 
             default:
@@ -239,7 +250,7 @@ public class SyllablesActivity extends AppCompatActivity {
         }
     }
 
-    public void adjustMode(boolean isChecked) {
+    public void adjustMode(boolean isChecked, RelativeLayout layout) {
         isChecked = getIntent().getBooleanExtra("isChecked",isChecked);
         if (isChecked) {
             layout.setBackgroundColor(Color.DKGRAY);

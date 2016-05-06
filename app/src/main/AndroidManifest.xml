@@ -30,7 +30,6 @@
         <activity android:name=".AntonymsActivity" />
         <activity android:name=".RhymesActivity" />
         <activity android:name=".ResultsActivity" />
-        <activity android:name=".AboutActivity" />
     </application>
 
 </manifest>

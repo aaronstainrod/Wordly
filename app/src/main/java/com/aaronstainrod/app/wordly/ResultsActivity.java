@@ -85,10 +85,7 @@ public class ResultsActivity extends AppCompatActivity {
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 return true;
-
-            case R.id.action_settings:
-                return true;
-
+            
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,5 +1,8 @@
 package com.aaronstainrod.app.wordly;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(main_toolbar);
 
         isChecked = getIntent().getBooleanExtra("isChecked", isChecked);
-        adjustMode(isChecked);
+        adjustMode(isChecked, main_layout);
     }
 
     //Sets up action bar
@@ -94,8 +97,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_settings:
-                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-                startActivity(intent);
+                Fragment fragment = new AboutFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragmentTransaction.replace(R.id.main_layout, fragment);
+                fragmentTransaction.addToBackStack("");
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+
+                main_drawer_layout.closeDrawers();
+
                 return true;
 
             default:
@@ -241,12 +253,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void adjustMode(boolean isChecked) {
+    public void adjustMode(boolean isChecked, RelativeLayout layout) {
         isChecked = getIntent().getBooleanExtra("isChecked",isChecked);
         if (isChecked) {
-            main_layout.setBackgroundColor(Color.DKGRAY);
+            layout.setBackgroundColor(Color.DKGRAY);
         } else {
-            main_layout.setBackgroundColor(Color.WHITE);
+            layout.setBackgroundColor(Color.WHITE);
         }
     }
 }

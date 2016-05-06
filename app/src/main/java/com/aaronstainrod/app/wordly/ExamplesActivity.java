@@ -1,5 +1,8 @@
 package com.aaronstainrod.app.wordly;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -64,7 +67,7 @@ public class ExamplesActivity extends AppCompatActivity {
         setSupportActionBar(examples_toolbar);
 
         isChecked = getIntent().getBooleanExtra("isChecked", isChecked);
-        adjustMode(isChecked);
+        adjustMode(isChecked, layout);
     }
 
 
@@ -90,9 +93,17 @@ public class ExamplesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_settings:
-                Intent intent = new Intent(ExamplesActivity.this, AboutActivity.class);
-                intent.putExtra("isChecked", isChecked);
-                startActivity(intent);
+                Fragment fragment = new AboutFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragmentTransaction.replace(R.id.examples_layout, fragment);
+                fragmentTransaction.addToBackStack("");
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+
+                adjustMode(isChecked, layout);
+                examples_drawer_layout.closeDrawers();
                 return true;
 
             default:
@@ -240,7 +251,7 @@ public class ExamplesActivity extends AppCompatActivity {
         }
     }
 
-    public void adjustMode(boolean isChecked) {
+    public void adjustMode(boolean isChecked, RelativeLayout layout) {
         isChecked = getIntent().getBooleanExtra("isChecked",isChecked);
         if (isChecked) {
             layout.setBackgroundColor(Color.DKGRAY);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/about_fragment"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aaronstainrod.app.wordly.AboutFragment">
+
+    <TextView
+        android:id="@+id/about_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="By Aaron Stainrod\nVisit aaronstainrod.com for more information"
+        android:textSize="36dp" />
+
+</RelativeLayout>
